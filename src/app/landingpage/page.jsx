@@ -1,9 +1,10 @@
 'use client'
+import { useState } from "react";
 import { Plane } from "lucide-react";
 import { useRouter } from "next/navigation";
-import Tasks from "@/components/task";
-import Review from "@/components/review";
-import Features from "@/components/features";
+import Tasks from "../../components/task";
+import Review from "../../components/review";
+import Features from "../../components/features";
 
 export default function Landingpage() {
   const router = useRouter();

@@ -1,7 +1,150 @@
+'use client'
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import Tasks from "../../components/task";
+import Review from "../../components/review";
+import Features from "../../components/features";
+// import  {useState, useEffect} from "react"
 export default function Dashboard(){
+    const router = useRouter();
+      const [resumeUpload, setResumeUpload] = useState(false);
+        const [selectedFile, setSelectedFile] = useState(null);
+    const userName=localStorage.getItem("userName");
+    const handleLogout=()=>{
+        localStorage.clear();
+        router.push('/landingpage');
+    }
+    const handleResumeScan=()=>{
+      // setResumeUpload(!resumeUpload);
+      router.push('/resumeanalysis');
+    }
+    
+
+  const handleFileChange = async(e) => {
+    const file = e.target.files[0];
+    if (file) {
+      // check size (<= 2MB)
+      if (file.size > 2 * 1024 * 1024) {
+        alert("File size should not exceed 2MB");
+        return;
+      }
+      // check type
+      const allowedTypes = [
+        "application/pdf",
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        "application/msword",
+      ];
+      if (!allowedTypes.includes(file.type)) {
+        alert("Only PDF or DOCX files are allowed");
+        return;
+      }
+      setSelectedFile(file);
+      const res=await fetch ('/api/resumeanalysis',{
+        
+      })
+    }
+  };
+
     return(
-        <section>
+      <>
+         <div className="bg-gradient-to-r from-indigo-900 via-purple-900 to-blue-900 text-white pb-20 pt-6 px-6">
+      
+      {/* Top Bar */}
+      <div className="flex xs:flex-row  md:items-center justify-between p-6">
+        {/* Logo Section */}
+        <div className="flex items-center space-x-3">
+          <img src="/download.png" alt="Logo" className="h-10 w-10" />
+          <h1 className="text-2xl font-bold tracking-wide">Logo</h1>
+        </div>
+
+        {/* Button */}
+        <div className="mt-4 md:mt-0">
+          <button onClick={handleLogout} className="inline-flex items-center px-6 py-2 border border-transparent text-lg font-semibold rounded-full shadow-lg bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 transition-all duration-300">
+            Logout
+          </button>
             
-        </section>
+     
+        </div>
+      </div>
+
+      {/* Hero Content */}
+      <div className="pt-8">
+    <div className="flex items-center justify-center">
+  <h1 className="text-5xl font-bold text-center">Welcome, {userName ? userName: 'Unknown'}</h1>
+</div>
+<div className="flex items-center justify-center p-4">
+    <p className="text-xl text-blue-200 font-bold">Let's optimise your Resume</p>
+
+</div>
+    </div>
+
+    {/*plan div*/}
+    <div className="flex justify-center mt-8">
+    <div className="flex flex-col items-center justify-center gap-6  bg-white/10 backdrop-blur-sm rounded-xl p-6 w-full max-w-3xl text-center shadow-lg">
+      <div className="">
+        <h2 className=" font-bold text-blue-200">Plan</h2>
+        <p className="font-extrabold text-xl">Free Plan </p>
+      </div>
+      <div>
+        <p className="text-blue-200">0/10 Scans used</p>
+      </div></div>
+</div>
+
+        <div>
+
+        {/* Image Section */}
+      <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-8">
+        <button onClick={handleResumeScan} className="inline-flex items-center px-4 py-1 text-lg font-semibold rounded-full shadow-lg  bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700  focus:ring-2 focus:ring-indigo-400 w-full sm:w-auto justify-center">New Resume Scan</button>
+          {resumeUpload && (
+        <div className="bg-[#1a1a1a] backdrop-blur-sm bg-opacity-90 p-6 absolute rounded-lg w-80">
+          {/* Close button */}
+          <div className="flex justify-end relative -top-[18px] left-[10px]">
+            <p
+              className="text-[20px] cursor-pointer"
+              onClick={() => setResumeUpload(false)}
+            >
+              x
+            </p>
+          </div>
+
+          {/* Heading */}
+          <div className="pb-6">
+            <h1>Upload Your Resume</h1>
+          </div>
+
+          {/* Upload Box */}
+          <label className="border-2 border-white border-dotted p-4 mt-4 block cursor-pointer text-center">
+            <p>
+              Drag & drop your resume <br /> here, or click to select <br />
+              <span className="font-semibold">PDF or DOCX (up to 2MB)</span>
+            </p>
+            <input
+              type="file"
+              accept=".pdf,.doc,.docx"
+              className="hidden"
+              onChange={handleFileChange}
+            />
+          </label>
+
+          {/* Show file name if uploaded */}
+          {selectedFile && (
+            <p className="mt-2 text-sm text-green-400">
+              Selected: {selectedFile.name}
+            </p>
+          )}
+        </div>
+      )}
+      </div>
+      </div>
+</div>
+<>
+      <Tasks />
+      <Review />
+      <Features />
+       </>
+       <>
+     
+       </>
+       </>
     )
 }

@@ -18,9 +18,14 @@ const handleLogin=async(e)=>{
     body: JSON.stringify(formdata),
     })
       const data = await res.json();
+      console.log("login data is: ", data);
+      
     if (res.ok) {
       alert("✅ Login successful!");
       localStorage.setItem("token", data.token);
+      localStorage.setItem("userName", data.user.name);
+      localStorage.setItem("userEmail", data.user.email);
+      // localStorage.setItem("token", data.token);
       router.push('/dashboard')
     } else {
       alert("❌ " + data.error);
