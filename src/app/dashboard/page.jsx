@@ -1,5 +1,5 @@
 'use client'
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Tasks from "../../components/task";
 import Review from "../../components/review";
@@ -9,41 +9,19 @@ export default function Dashboard(){
     const router = useRouter();
       const [resumeUpload, setResumeUpload] = useState(false);
         const [selectedFile, setSelectedFile] = useState(null);
-    const userName=localStorage.getItem("userName");
-    const handleLogout=()=>{
+          const [userName, setUserName] = useState("Unknown");
+  useEffect(() => {
+    const storedUserName = localStorage.getItem("userName");
+    if (storedUserName) setUserName(storedUserName);
+  }, []);   
+   const handleLogout=()=>{
         localStorage.clear();
         router.push('/landingpage');
     }
+    
     const handleResumeScan=()=>{
-      // setResumeUpload(!resumeUpload);
       router.push('/resumeanalysis');
     }
-    
-
-  const handleFileChange = async(e) => {
-    const file = e.target.files[0];
-    if (file) {
-      // check size (<= 2MB)
-      if (file.size > 2 * 1024 * 1024) {
-        alert("File size should not exceed 2MB");
-        return;
-      }
-      // check type
-      const allowedTypes = [
-        "application/pdf",
-        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-        "application/msword",
-      ];
-      if (!allowedTypes.includes(file.type)) {
-        alert("Only PDF or DOCX files are allowed");
-        return;
-      }
-      setSelectedFile(file);
-      const res=await fetch ('/api/resumeanalysis',{
-        
-      })
-    }
-  };
 
     return(
       <>
@@ -95,48 +73,9 @@ export default function Dashboard(){
         {/* Image Section */}
       <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-8">
         <button onClick={handleResumeScan} className="inline-flex items-center px-4 py-1 text-lg font-semibold rounded-full shadow-lg  bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700  focus:ring-2 focus:ring-indigo-400 w-full sm:w-auto justify-center">New Resume Scan</button>
-          {resumeUpload && (
-        <div className="bg-[#1a1a1a] backdrop-blur-sm bg-opacity-90 p-6 absolute rounded-lg w-80">
-          {/* Close button */}
-          <div className="flex justify-end relative -top-[18px] left-[10px]">
-            <p
-              className="text-[20px] cursor-pointer"
-              onClick={() => setResumeUpload(false)}
-            >
-              x
-            </p>
-          </div>
-
-          {/* Heading */}
-          <div className="pb-6">
-            <h1>Upload Your Resume</h1>
-          </div>
-
-          {/* Upload Box */}
-          <label className="border-2 border-white border-dotted p-4 mt-4 block cursor-pointer text-center">
-            <p>
-              Drag & drop your resume <br /> here, or click to select <br />
-              <span className="font-semibold">PDF or DOCX (up to 2MB)</span>
-            </p>
-            <input
-              type="file"
-              accept=".pdf,.doc,.docx"
-              className="hidden"
-              onChange={handleFileChange}
-            />
-          </label>
-
-          {/* Show file name if uploaded */}
-          {selectedFile && (
-            <p className="mt-2 text-sm text-green-400">
-              Selected: {selectedFile.name}
-            </p>
-          )}
         </div>
-      )}
       </div>
       </div>
-</div>
 <>
       <Tasks />
       <Review />
