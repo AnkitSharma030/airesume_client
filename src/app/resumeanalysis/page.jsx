@@ -12,7 +12,7 @@ const router=useRouter();
   });
   const {setAnalysis}= useAnalysisStore();
 
-  // handle input changes
+  // handle input chan
   const handleChange = (e) => {
     const { name, value, files } = e.target;
     if (name === "resume") {
