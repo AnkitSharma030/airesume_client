@@ -32,9 +32,9 @@ export default function RootLayout({ children }) {
           <h1 className="font-extrabold text-xl">AI Resume Analyser
           </h1>
           <nav className=" space-x-4">
-            <a href="/" className="hover:underline">Home</a>
+            {/* <a href="/" className="hover:underline">Home</a>
             <a href="/about" className="hover:underline">About</a>
-            <a href="/contact" className="hover:underline">Contact</a>
+            <a href="/contact" className="hover:underline">Contact</a> */}
             {/* <button>Sign in</button> */}
           </nav>
         </header>
