@@ -28,6 +28,9 @@ export default function Landingpage() {
           <button onClick={handleSignup} className="inline-flex items-center px-6 py-2 border border-transparent text-lg font-semibold rounded-full shadow-lg bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 transition-all duration-300">
             Sign in
           </button>
+<a href="https://mail.google.com/mail/?view=cm&fs=1&to=sharmaankit24009@gmail.com" target="_blank">
+  Explore
+</a>
         </div>
       </div>
 
