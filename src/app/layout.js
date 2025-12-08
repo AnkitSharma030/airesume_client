@@ -1,8 +1,9 @@
 import "./globals.css";
+import ToastProvider from "../components/ToastProvider";
 
 export const metadata = {
-  title: "My Next App",
-  description: "Using Sansation font",
+  title: "AI Resume Analyzer",
+  description: "AI-Powered Resume Analysis",
 };
 
 export default function RootLayout({ children }) {
@@ -27,45 +28,22 @@ export default function RootLayout({ children }) {
         `}</style>
       </head>
       <body className="antialiased bg-gray-100 text-gray-900">
+        {/* Toast notifications */}
+        <ToastProvider />
         {/* ✅ Navbar */}
         <header className="bg-gradient-to-r from-indigo-900 via-purple-900 to-blue-900 text-white p-4 flex justify-between">
-          <h1 className="font-extrabold text-xl">AI Resume Analyser
-          </h1>
           <nav className=" space-x-4">
-            {/* <a href="/" className="hover:underline">Home</a>
-            <a href="/about" className="hover:underline">About</a>
-            <a href="/contact" className="hover:underline">Contact</a> */}
-            {/* <button>Sign in</button> */}
           </nav>
         </header>
 
         {/* ✅ Main layout with sidebar */}
         <div className="flex">
-          {/* Sidebar */}
-          {/* <aside className="w-64 bg-gradient-to-r from-indigo-900 via-purple-900 to-blue-900 text-white font-extrabold text-xl min-h-screen p-4">
-            <ul className="space-y-6 mt-6">
-              <li><a href="/" className="block hover:bg-gray-300 p-2 rounded">Dashboard</a></li>
-              <li><a href="/profile" className="block hover:bg-gray-300 p-2 rounded">Profile</a></li>
-              <li><a href="/settings" className="block hover:bg-gray-300 p-2 rounded">Settings</a></li>
-            </ul>
-          </aside> */}
-
           {/* Page content */}
           <main className="flex-1 ">
             {children}
-
-            {/* <div className="mt-6 p-4 bg-yellow-100 border border-yellow-300 rounded">
-              hi 👋 this is extra layout content that appears on every page
-            </div> */}
           </main>
         </div>
-
-        {/* ✅ Footer */}
-      {/* <footer className="bg-[#303030] text-white p-4 text-center fixed bottom-0 left-0 w-full">
-  © {new Date().getFullYear()} AI Resume Analyser | All Rights Reserved
-</footer> */}
-
       </body>
-    </html>
+    </html >
   );
 }

@@ -1,6 +1,8 @@
 'use client'
 import { useState } from "react"
 import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
+import Loader from "../../components/Loader";
 
 export default function Login() {
   const router = useRouter();
@@ -8,7 +10,7 @@ export default function Login() {
     email: "",
     password: ""
   });
-  const [loading, setLoading] = useState(false); // 👈 Loader state
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     setFormdata({ ...formdata, [e.target.name]: e.target.value });
@@ -16,7 +18,7 @@ export default function Login() {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    setLoading(true); // 👈 Show loader before API call
+    setLoading(true);
 
     try {
       const res = await fetch("/api/login", {
@@ -29,75 +31,68 @@ export default function Login() {
       console.log("login data is: ", data);
 
       if (res.ok) {
-        alert("✅ Login successful!");
+        toast.success("Login successful! Redirecting...");
         localStorage.setItem("token", data.token);
         localStorage.setItem("userName", data.user.name);
         localStorage.setItem("userEmail", data.user.email);
         router.push("/dashboard");
       } else {
-        alert("❌ " + data.error);
+        toast.error(data.error || "Login failed");
       }
     } catch (error) {
-      alert("⚠️ Something went wrong!");
+      toast.error("Something went wrong! Please try again.");
       console.error(error);
     } finally {
-      setLoading(false); // 👈 Hide loader after API call
+      setLoading(false);
     }
   };
 
   return (
     <section className="flex items-center justify-center min-h-screen bg-gradient-to-br from-green-100 via-white to-green-50">
+      {loading && <Loader text="Signing you in..." />}
       <div className="bg-white shadow-xl rounded-2xl p-8 w-full max-w-md border border-green-200">
         {/* Title */}
         <h2 className="text-2xl font-bold text-green-600 text-center mb-6">Welcome Back 👋</h2>
         <p className="text-gray-500 text-center mb-8">Login to continue</p>
 
-        {loading ? (
-          // 🔄 Loader UI
-          <div className="flex justify-center items-center py-10">
-            <div className="w-12 h-12 border-4 border-green-500 border-t-transparent rounded-full animate-spin"></div>
-          </div>
-        ) : (
-          <>
-            {/* Input fields */}
-            <div className="flex flex-col space-y-4">
-              <input
-                className="px-4 py-3 text-black rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-400 transition"
-                type="email"
-                name="email"
-                placeholder="Enter your email"
-                value={formdata.email}
-                onChange={handleChange}
-              />
-              <input
-                className="px-4 py-3 text-black rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-400 transition"
-                type="password"
-                name="password"
-                placeholder="Enter your password"
-                value={formdata.password}
-                onChange={handleChange}
-              />
-            </div>
+        {/* Input fields */}
+        <div className="flex flex-col space-y-4">
+          <input
+            className="px-4 py-3 text-black rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-400 transition"
+            type="email"
+            name="email"
+            placeholder="Enter your email"
+            value={formdata.email}
+            onChange={handleChange}
+          />
+          <input
+            className="px-4 py-3 text-black rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-400 transition"
+            type="password"
+            name="password"
+            placeholder="Enter your password"
+            value={formdata.password}
+            onChange={handleChange}
+          />
+        </div>
 
-            {/* Button */}
-            <button
-              onClick={handleLogin}
-              className="w-full mt-6 py-3 bg-green-500 text-white font-semibold rounded-lg shadow-md hover:bg-green-600 transition duration-200"
-            >
-              Login
-            </button>
+        {/* Button */}
+        <button
+          onClick={handleLogin}
+          disabled={loading}
+          className="w-full mt-6 py-3 bg-green-500 text-white font-semibold rounded-lg shadow-md hover:bg-green-600 transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          Login
+        </button>
 
-            {/* Extra links */}
-            <div className="text-sm text-gray-500 text-center mt-4">
-              <p>
-                Don’t have an account?{" "}
-                <a href="/signup" className="text-green-600 font-medium hover:underline">
-                  Sign Up
-                </a>
-              </p>
-            </div>
-          </>
-        )}
+        {/* Extra links */}
+        <div className="text-sm text-gray-500 text-center mt-4">
+          <p>
+            Don't have an account?{" "}
+            <a href="/signup" className="text-green-600 font-medium hover:underline">
+              Sign Up
+            </a>
+          </p>
+        </div>
       </div>
     </section>
   );

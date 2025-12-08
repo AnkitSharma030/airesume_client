@@ -1,14 +1,17 @@
 'use client'
 import { useState } from "react"
 import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
+import Loader from "../../components/Loader";
 
-export default function Signup(){
-  const router=useRouter();
+export default function Signup() {
+  const router = useRouter();
   const [formdata, setFormdata] = useState({
     name: "",
     email: "",
     password: ""
   });
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     setFormdata({ ...formdata, [e.target.name]: e.target.value });
@@ -16,32 +19,41 @@ export default function Signup(){
 
   const handleSignup = async (e) => {
     e.preventDefault();
-    const res = await fetch('/api/signup', {
-      method: 'POST',
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(formdata),
-    });
+    setLoading(true);
 
-    const data = await res.json();
-    if (res.ok) {
-      alert("✅ Signup successful!");
-      localStorage.setItem("token", data.token);
-            router.push('/login')
+    try {
+      const res = await fetch('/api/signup', {
+        method: 'POST',
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formdata),
+      });
 
-    } else {
-      alert("❌ " + data.error);
+      const data = await res.json();
+      if (res.ok) {
+        toast.success("Account created successfully!");
+        localStorage.setItem("token", data.token);
+        router.push('/login');
+      } else {
+        toast.error(data.error || "Signup failed");
+      }
+    } catch (error) {
+      toast.error("Something went wrong! Please try again.");
+      console.error(error);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <section className="flex items-center justify-center min-h-screen bg-gradient-to-br from-green-100 via-white to-green-50">
+      {loading && <Loader text="Creating your account..." />}
       <div className="bg-white shadow-xl rounded-2xl p-8 w-full max-w-md border border-green-200">
         <h2 className="text-2xl font-bold text-green-600 text-center mb-6">Welcome 👋</h2>
-        <p className="text-gray-500 text-center mb-8 font-bold">Signup!!!!</p>
+        <p className="text-gray-500 text-center mb-8 font-bold">Create your account</p>
 
         <div className="flex flex-col space-y-4">
           <input
-            type="text"  // ✅ fixed
+            type="text"
             name="name"
             placeholder="Enter your name"
             value={formdata.name}
@@ -66,7 +78,11 @@ export default function Signup(){
           />
         </div>
 
-        <button onClick={handleSignup} className="w-full mt-6 py-3 bg-green-500 text-white font-semibold rounded-lg shadow-md hover:bg-green-600 transition duration-200">
+        <button
+          onClick={handleSignup}
+          disabled={loading}
+          className="w-full mt-6 py-3 bg-green-500 text-white font-semibold rounded-lg shadow-md hover:bg-green-600 transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+        >
           Sign Up
         </button>
 
