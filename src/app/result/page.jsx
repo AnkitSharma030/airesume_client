@@ -72,7 +72,7 @@ export default function ResumeAnalysis() {
           </div>
           <div className="bg-green-50 rounded-xl p-4">
             <p className="text-sm text-gray-500">Confidence Score</p>
-            <p className="text-2xl font-bold text-green-600">{parsedAnalysis.match?.confidence_score || 0}/100</p>
+            <p className="text-2xl font-bold text-green-600">{parsedAnalysis.match?.confidence_score * 10 || 0}/10</p>
           </div>
         </div>
       </section>

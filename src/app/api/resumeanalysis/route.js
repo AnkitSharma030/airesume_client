@@ -4,10 +4,12 @@ import pdf from 'pdf-parse/lib/pdf-parse.js'
 import { GoogleGenerativeAI } from "@google/generative-ai";
 // import User from "../../../models/User";
 import User from "@/models/User";
+import { connectDB } from "@/lib/mongodb";
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 export async function POST(req) {
   try {
+    await connectDB();
     const formData = await req.formData();    // Read ONCE only
     // console.log("form data is: ", formData);
 
