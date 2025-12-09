@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAnalysisStore } from "../../lib/zustand/analysisStore";
 import toast from "react-hot-toast";
@@ -8,6 +8,7 @@ import Loader from "../../components/Loader";
 export default function ResumeForm() {
   const router = useRouter();
   const [formData, setFormData] = useState({
+    userId: "",
     skills: "",
     jobRole: "",
     resume: null,
@@ -15,11 +16,46 @@ export default function ResumeForm() {
   const [loading, setLoading] = useState(false);
   const { setAnalysis } = useAnalysisStore();
 
+
+  useEffect(() => {
+    const userId = localStorage.getItem("userId");
+    if (userId) {
+      setFormData({ ...formData, userId });
+    }
+
+  }, []);
+  // Allowed file types
+  const ALLOWED_TYPES = [
+    'application/pdf',
+    'application/msword',
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+  ];
+  const ALLOWED_EXTENSIONS = ['.pdf', '.doc', '.docx'];
+
   // handle input change
   const handleChange = (e) => {
     const { name, value, files } = e.target;
     if (name === "resume") {
-      setFormData({ ...formData, resume: files[0] });
+      const file = files[0];
+      if (file) {
+        const fileExtension = file.name.toLowerCase().slice(file.name.lastIndexOf('.'));
+        const isValidType = ALLOWED_TYPES.includes(file.type) || ALLOWED_EXTENSIONS.includes(fileExtension);
+
+        if (!isValidType) {
+          toast.error("Please upload a PDF or Word document (.pdf, .doc, .docx)");
+          e.target.value = ''; // Reset file input
+          return;
+        }
+
+        if (file.size > 2 * 1024 * 1024) { // 2MB limit
+          toast.error("File size must be less than 2MB");
+          e.target.value = '';
+          return;
+        }
+
+        setFormData({ ...formData, resume: file });
+        toast.success(`${file.name} uploaded successfully`);
+      }
     } else {
       setFormData({ ...formData, [name]: value });
     }
@@ -38,6 +74,7 @@ export default function ResumeForm() {
 
     // Create FormData object
     const payload = new FormData();
+    payload.append("id", formData.userId);
     payload.append("skills", formData.skills);
     payload.append("jobRole", formData.jobRole);
     payload.append("resume", formData.resume);
@@ -49,7 +86,7 @@ export default function ResumeForm() {
       });
 
       const data = await res.json();
-      console.log("Analysis Result:", data);
+      // console.log("Analysis Result:", data);
       setAnalysis(JSON.parse(data.analysis));
       toast.success("Resume analyzed successfully!");
       router.push("/result");
@@ -89,11 +126,12 @@ export default function ResumeForm() {
             <input
               type="file"
               name="resume"
+              accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
               onChange={handleChange}
               required
               className="w-full text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-600 hover:file:bg-blue-100 cursor-pointer"
             />
-            <p className="text-sm text-gray-500">Max size: 2MB</p>
+            <p className="text-sm text-gray-500">Accepted formats: PDF, DOC, DOCX (Max: 2MB)</p>
           </div>
 
           {/* Job Role Input */}

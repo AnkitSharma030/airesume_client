@@ -28,13 +28,16 @@ export default function Login() {
       });
 
       const data = await res.json();
-      console.log("login data is: ", data);
+      // console.log("login data is: ", data);
 
       if (res.ok) {
         toast.success("Login successful! Redirecting...");
         localStorage.setItem("token", data.token);
         localStorage.setItem("userName", data.user.name);
         localStorage.setItem("userEmail", data.user.email);
+        localStorage.setItem("userId", data.user.userId);
+        // console.log("user id is: ", data.user.userId);
+        localStorage.setItem("scanCount", data.user.scans);
         router.push("/dashboard");
       } else {
         toast.error(data.error || "Login failed");

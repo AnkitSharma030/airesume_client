@@ -20,7 +20,7 @@ export async function POST(req) {
 
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "1d" });
 
-    return Response.json({ message: "Login successful", token ,user:{email:user.email, name:user.name} }, { status: 200 });
+    return Response.json({ message: "Login successful", token, user: { email: user.email, name: user.name, userId: user._id, scans: user.scans } }, { status: 200 });
   } catch (err) {
     return Response.json({ error: err.message }, { status: 500 });
   }
