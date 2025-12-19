@@ -4,10 +4,12 @@ import { useRouter } from "next/navigation";
 import Tasks from "../../components/task";
 import Review from "../../components/review";
 import Features from "../../components/features";
+import UserProfileModal from "../../components/modals/userProfileModal";
 export default function Dashboard() {
   const router = useRouter();
   const [userName, setUserName] = useState("Unknown");
   const [scanCount, setScanCount] = useState(0);
+  const [open, setOpen] = useState(false);
   useEffect(() => {
     const fetchUserData = async () => {
       const token = localStorage.getItem("token");
@@ -64,6 +66,10 @@ export default function Dashboard() {
     router.push('/resumeanalysis');
   }
 
+  const handleUserProfile = () => {
+    setOpen(true);
+  }
+
 
 
   return (
@@ -79,9 +85,12 @@ export default function Dashboard() {
           </div>
 
           {/* Button */}
-          <div className="mt-4 md:mt-0">
+          <div className="mt-4 md:mt-0 flex gap-2">
             <button onClick={handleLogout} className="inline-flex items-center px-6 py-2 border border-transparent text-lg font-semibold rounded-full shadow-lg bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 transition-all duration-300">
               Logout
+            </button>
+            <button onClick={handleUserProfile} className="inline-flex items-center px-6 py-2 border border-transparent text-lg font-semibold rounded-full shadow-lg bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 transition-all duration-300">
+              Profile
             </button>
 
 
@@ -137,6 +146,8 @@ export default function Dashboard() {
       <>
 
       </>
+
+      <UserProfileModal open={open} setOpen={setOpen} />
     </>
   )
 }
