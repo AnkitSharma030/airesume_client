@@ -3,6 +3,8 @@ import { useRouter } from "next/navigation";
 import { useAnalysisStore } from "../../lib/zustand/analysisStore";
 import { useEffect, useState } from "react";
 import Loader from "../../components/Loader";
+// import pdfDownload from '../../components/reportPDF'
+import pdfDownload from "@/components/reportPDF/report";
 
 export default function ResumeAnalysis() {
   const { analysis } = useAnalysisStore();
@@ -49,12 +51,21 @@ export default function ResumeAnalysis() {
 
   return (
     <div className="p-6 space-y-6 max-w-4xl mx-auto">
-      <button
-        className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold py-2 px-6 rounded-xl shadow-md transition duration-200"
-        onClick={() => router.push("/dashboard")}
-      >
-        ← Back to Dashboard
-      </button>
+      <div className="flex justify-between">
+        <button
+          className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold py-2 px-6 rounded-xl shadow-md transition duration-200"
+          onClick={() => router.push("/dashboard")}
+        >
+          ← Back to Dashboard
+        </button>
+        <button
+          onClick={() => pdfDownload(parsedAnalysis)}
+          className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-6 py-2 rounded-xl"
+        >
+          Download Report
+        </button>
+
+      </div>
 
       <section className="bg-gradient-to-r from-indigo-900 via-purple-900 to-blue-900 rounded-2xl p-6 text-white">
         <h1 className="font-bold text-3xl">📊 Resume Report</h1>
